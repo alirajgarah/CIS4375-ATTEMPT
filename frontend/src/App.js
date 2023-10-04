@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import './App.css';
-import BluePage from './BluePage'; // Import the BluePage component
+import BluePage from './BluePage'; 
+import RedPage from './RedPage'; 
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 class App extends Component {
   constructor() {
@@ -10,7 +12,8 @@ class App extends Component {
       user_name: '',
       pass_word: '',
       message: '',
-      loggedIn: false, // Track whether the user is logged in
+      loggedIn: false,
+      shouldRedirect: false,
     };
   }
 
@@ -22,56 +25,69 @@ class App extends Component {
     const { user_name, pass_word } = this.state;
 
     axios
-      .post('http://localhost:3000/login', {
+      .post('http://localhost:3002/login', {
         user_name,
         pass_word,
       })
       .then((response) => {
         if (response.status === 200) {
-          this.setState({ message: 'Login successful', loggedIn: true });
+          this.setState({ message: 'Login successful! Redirecting...' });
+
+          setTimeout(() => {
+            this.setState({ loggedIn: true, shouldRedirect: true });
+          }, 1500);
         } else {
           this.setState({ message: 'Invalid username or password' });
         }
       })
       .catch((error) => {
         console.error('Error:', error);
-        this.setState({ message: 'Invalid' });
+        this.setState({ message: 'Login failed' });
       });
   };
 
   render() {
-    // If the user is logged in, redirect to the BluePage
-    if (this.state.loggedIn) {
-      return <BluePage />;
-    }
-
     return (
-      <div className="App">
-        <div className="login-container">
-          <h1>AdVantage</h1>
-          <div className="input-container">
-            <input
-              type="text"
-              name="user_name"
-              placeholder="Username"
-              onChange={this.handleInputChange}
+      <Router>
+        <div className="App">
+          <Routes>
+            <Route
+              path="/"
+              element={
+                this.state.shouldRedirect ? (
+                  <Navigate to="/bluepage" replace={true} />
+                ) : (
+                  <div className="login-container">
+                    <h1>AdVantage Dashboard</h1>
+                    <div className="input-container">
+                      <input
+                        type="text"
+                        name="user_name"
+                        placeholder="Username"
+                        onChange={this.handleInputChange}
+                      />
+                    </div>
+                    <div className="input-container">
+                      <input
+                        type="password"
+                        name="pass_word"
+                        placeholder="Password"
+                        onChange={this.handleInputChange}
+                      />
+                    </div>
+                    <button onClick={this.handleLogin}>Login</button>
+                    <p>{this.state.message}</p>
+                  </div>
+                )
+              }
             />
-          </div>
-          <div className="input-container">
-            <input
-              type="password"
-              name="pass_word"
-              placeholder="Password"
-              onChange={this.handleInputChange}
-            />
-          </div>
-          <button onClick={this.handleLogin}>Login</button>
-          <p>{this.state.message}</p>
+            <Route path="bluepage" element={<BluePage />} />
+            <Route path="redpage" element={<RedPage />} />
+          </Routes>
         </div>
-      </div>
+      </Router>
     );
   }
 }
 
 export default App;
-

@@ -1,0 +1,13 @@
+.red-page {
+    background-color: red;
+    color: white;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  h1 {
+    margin: 0;
+  }
+  

@@ -1,50 +1,74 @@
 .blue-page {
-    background-color: #eff8ff;  
+    background-color: #aaccf0;  
     color: #002366;  
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 100vh;
+    height: 100vh;  /* Changed from 500vh to 100vh */
     font-family: 'Helvetica Neue', Arial, sans-serif;  
-}
-
-h1 {
-    font-size: 2em;  
-    margin-bottom: 50px;  
-}
-
-.dropzone {
+  }
+  
+  .blue-content {
+    background-color: #ffffff; 
+    border-radius: 5px;  
+    padding: 40px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    max-width: 600px;  /* Limit width of content */
+  }
+  
+  h1 {
+    font-size: 2.5em;  
+    margin-bottom: 40px; 
+    font-weight: 600;
+  }
+  
+  .dropzone {
     border: 2px dashed #007bff;  
     padding: 50px;  
-    margin-bottom: 20px;  
+    margin-bottom: 30px;  
     border-radius: 10px;  
     transition: border-color 0.3s ease, box-shadow 0.3s ease;  
-}
-
-.dropzone:hover {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    max-width: 200px;
+  }
+  
+  .dropzone:hover {
     border-color: #0056b3;  
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);  
-}
-
-.import-button {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 15px 30px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 18px;
-    transition: background-color 0.3s ease, transform 0.3s ease;  
-}
-
-.import-button:hover {
-    background-color: #0056b3;
-    transform: scale(1.05);  
-}
-
-p {
-    max-width: 500px;  
+  }
+  
+  p {
+    max-width: 300px;  
     text-align: center;  
     margin-top: 20px;  
-}
+    font-size: 1.1em;
+  }
+  
+  .message-success {
+    color: #007bff;
+    font-weight: 600;
+  }
+  
+  .message-fail {
+    color: #d9534f;
+    font-weight: 600;
+  }
+  
+  input[type="file"] {
+    margin-top: 20px;
+    cursor: pointer;
+    font-size: 1.2em;
+  }
+  
+  @media screen and (max-width: 768px) {
+    .blue-content, .dropzone {
+      width: 80%;
+    }
+  }
+  

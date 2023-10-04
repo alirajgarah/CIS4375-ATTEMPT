@@ -1,10 +1,12 @@
 import React, { useState, useRef } from 'react';
 import './BluePage.css';
 import { useDropzone } from 'react-dropzone';
+import { useNavigate } from 'react-router-dom';  
 
 const BluePage = () => {
   const [message, setMessage] = useState('');
   const fileInputRef = useRef();
+  const navigate = useNavigate();  
 
   const onDrop = (acceptedFiles, fileRejections) => {
     if (fileRejections.length > 0) {
@@ -31,7 +33,12 @@ const BluePage = () => {
       }
 
       // If the file passes the check, you can continue to process it...
-      setMessage('File uploaded successfully!');
+      setMessage('File uploaded successfully! Redirecting...');
+
+      // Redirecting to the RedPage after a short delay
+      setTimeout(() => {
+        navigate('/redpage');  // Redirect to RedPage
+      }, 2000);
     };
 
     reader.onerror = () => {
@@ -51,13 +58,16 @@ const BluePage = () => {
 
   return (
     <div className="blue-page">
-      <h1>Import Data</h1>
-      <div {...getRootProps()} className="dropzone">
-        <input {...getInputProps()} ref={fileInputRef} />
-        <p>Click to select CSV file</p>
+      <div className="blue-content">
+        <h1>Import Data</h1>
+        <div {...getRootProps()} className="dropzone">
+          <input {...getInputProps()} ref={fileInputRef} />
+          <p>Click or drag to select a CSV file</p>
+        </div>
+        <p className={message.includes('success') ? 'message-success' : 'message-fail'}>
+          {message}
+        </p>
       </div>
-
-      <p>{message}</p>
     </div>
   );
 };

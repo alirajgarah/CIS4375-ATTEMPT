@@ -1,53 +1,44 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import './BluePage.css';
 import { useDropzone } from 'react-dropzone';
-import { useNavigate } from 'react-router-dom';  
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';  
 
 const BluePage = () => {
   const [message, setMessage] = useState('');
-  const fileInputRef = useRef();
-  const navigate = useNavigate();  
+  const [loading, setLoading] = useState(false);  // New state variable
+  const navigate = useNavigate();
 
-  const onDrop = (acceptedFiles, fileRejections) => {
-    if (fileRejections.length > 0) {
-      const warningMessage = 'Please upload a valid .csv file.';
-      setMessage(warningMessage);
-      alert(warningMessage);
+  const onDrop = (acceptedFiles) => {
+    const file = acceptedFiles[0];  
+
+    if (!file || file.type !== 'text/csv') {
+      setMessage('Please upload a valid CSV file.');
       return;
     }
 
-    // File reading logic to validate if it's a probable CSV
-    const file = acceptedFiles[0];  // Assuming single file as 'multiple' is false
-    const reader = new FileReader();
+    const formData = new FormData();
+    formData.append('file', file);
+    
+    setLoading(true);  // Set loading to true when upload begins
 
-    reader.onload = (event) => {
-      const content = event.target.result;
-      const firstLine = content.split('\n')[0];
-      
-      // Simple CSV check: Expecting at least one comma in the first line
-      if (!firstLine.includes(',')) {
-        const warningMessage = 'The uploaded file does not appear to be a valid CSV.';
-        setMessage(warningMessage);
-        alert(warningMessage);
-        return;
-      }
-
-      // If the file passes the check, you can continue to process it...
+    axios.post('http://localhost:3002/upload-csv', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then((response) => {
       setMessage('File uploaded successfully! Redirecting...');
-
-      // Redirecting to the RedPage after a short delay
       setTimeout(() => {
-        navigate('/redpage');  // Redirect to RedPage
+        navigate('/redpage');  
       }, 2000);
-    };
-
-    reader.onerror = () => {
-      const warningMessage = 'An error occurred while reading the file.';
-      setMessage(warningMessage);
-      alert(warningMessage);
-    };
-
-    reader.readAsText(file);
+    })
+    .catch((error) => {
+      setMessage(`Upload failed: ${error.response?.data?.message || 'An unexpected error occurred'}`);
+    })
+    .finally(() => {
+      setLoading(false);  // Set loading to false once upload is done
+    });
   };
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -61,9 +52,10 @@ const BluePage = () => {
       <div className="blue-content">
         <h1>Import Data</h1>
         <div {...getRootProps()} className="dropzone">
-          <input {...getInputProps()} ref={fileInputRef} />
-          <p>Click or drag to select a CSV file</p>
+          <input {...getInputProps()} />
+          <p>Click to select a CSV file</p>
         </div>
+        {loading && <p className="loading-message">Uploading file...</p>}
         <p className={message.includes('success') ? 'message-success' : 'message-fail'}>
           {message}
         </p>

@@ -46,6 +46,25 @@ class App extends Component {
       });
   };
 
+  handleRegister = () => {
+    const { user_name, pass_word } = this.state;
+
+    axios
+      .post('http://localhost:3002/register', {
+        user_name,
+        pass_word,
+      })
+      .then((response) => {
+        if (response.status === 200) {
+          this.setState({ message: 'Registered successfully! You can now log in.' });
+        }
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+        this.setState({ message: 'Registration failed' });
+      });
+  };
+
   render() {
     return (
       <Router>
@@ -76,6 +95,7 @@ class App extends Component {
                       />
                     </div>
                     <button onClick={this.handleLogin}>Login</button>
+                    <button onClick={this.handleRegister}>Register</button>
                     <p>{this.state.message}</p>
                   </div>
                 )

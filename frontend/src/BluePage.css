@@ -72,3 +72,8 @@
     }
   }
   
+  .loading-message {
+    color: #f0ad4e;  /* Using Bootstrap's warning color as an example */
+    /* Additional styling as needed */
+  }
+  
